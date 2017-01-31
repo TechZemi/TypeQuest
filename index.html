@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>TypeQuest</title>
+        <style>
+            body { background: #000;  }
+            #application_region { margin: 0 auto;width:1000px;background: #fff; }
+            #game_field { height:1000px; }
+            #main { position: relative; height:480px; background-image: url('./image/bg_natural_umi.jpg');background-size:cover; }
+            #sub { padding-top:20px; height:300px; background: #f0f0f0; }
+
+            #challenge, #stopwatch { position: absolute; display: inline-block; padding: 20px; background-color: rgba(0, 0, 0, 0.5); color:#fff; text-align: center; border-radius: 10px; z-index: 100;}
+            #challenge { font-size: 2rem; }
+            #challenge ul { margin: 0px; }
+            #stopwatch { top: 20px; right: 20px; }
+
+            #sub li { display: inline-block; margin: 0 2px; padding-top:20px;width: 50px; height: 30px; border: 1px solid #888; border-radius: 4px; text-align:center; }
+
+            .markup { background: #dda0dd; }
+
+            #flying_witch { position: absolute; width: 159px; height: 200px; }
+
+            #label, #value, #value ul { padding: 0; }
+            #label li { display: inline-block; }
+            #value ul { display: inline-block; }
+            #value li { display: inline-block; padding: 0 2px; }
+            #value ul li { display: inline-block; padding: 0 1px; }
+        </style>
+    </head>
+    <body>
+        <div id="application_region">
+            <div id="game_field">
+                <div id="main">
+                    <img id="witch" src="./image/fantasy_witch.png">
+                </div>
+                <div id="sub"></div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="./typequest.js"></script>
+        <script src="./script.js"></script>
+    </body>
+</html>
