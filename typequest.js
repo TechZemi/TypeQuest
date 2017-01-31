@@ -556,7 +556,8 @@ TYPEQUEST.Game = (function(window, documemt, $){
 	/**
 	 *	次のチャレンジに移る
 	 */
-	p.next = function(nosignal = false) {
+	p.next = function(nosignal) {
+		if ( nosignal === undefined ) nosignal = false;
 		var challenge = this.challenges[this.challenge_index]; 
 
 		this.label_index = 0;
@@ -603,7 +604,9 @@ TYPEQUEST.Game = (function(window, documemt, $){
 		this.center();
 	};
 
-	p.end = function(isCancel = false, message = 'クリア！！<br>Spaceキーを押してもう一度挑戦！') {
+	p.end = function(isCancel, message) {
+		if ( isCancel === undefined ) isCancel = false;
+		if ( message === undefined ) message = 'クリア！！<br>Spaceキーを押してもう一度挑戦！';
 		// キー受付を解除
 		$(document).off('keydown.game');
 
