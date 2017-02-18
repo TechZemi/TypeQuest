@@ -284,27 +284,8 @@
 		var keyboard = new TYPEQUEST.Keyboard('sub');
 		// ストップウォッチ
 		var stopwatch = new TYPEQUEST.StopWatch('main');
-
 		// モード選択ダイアログ
-		var elem = $('#main');
-		var selector = $('<div id="selector">上下キーでモードを選択</div>');
-		var ul = $('<ul>');
-		for ( var i in ゲーム内容 ) {
-			var mode = ゲーム内容[i];
-			if ( i == 0 ) {
-				$('<li class="selected">' + mode.モード + '</li>').appendTo(ul);
-			} else {
-				$('<li>' + mode.モード + '</li>').appendTo(ul);
-			}
-		}
-		selector.append(ul).appendTo(elem);
-
-		var centerX = elem.height() / 2;
-		var centerY = elem.width() / 2;
-		var adjustmentY = selector.width() / 2;
-		selector.css('top', centerX + 100);
-		selector.css('left', centerY - adjustmentY);
-
+		var modeSelector = new TYPEQUEST.ModeSelector('main', ゲーム内容);
 		// タイピングゲームエンジン
 		var game = new TYPEQUEST.Game('main', ゲーム内容);
 
@@ -363,7 +344,7 @@
 				isPlaying = false;
 				stopwatch.stop();
 				keyboard.cleanup();
-				selector.show();
+				modeSelector.show();
 			}
 		};
 
@@ -377,26 +358,24 @@
 				if ( e.keyCode == 38 ) {
 					if ( 0 < mode_index ) {
 						mode_index -= 1;
-						$('#selector li').removeClass('selected');
-						$('#selector li:eq(' + mode_index +')').addClass('selected');
 					} else {
 						mode_index = 0;
 					}
+					modeSelector.select(mode_index);
 					console.log('mode_index:', mode_index);
 				// ↓キー 40
 				} else if ( e.keyCode == 40 ) {
 					if ( mode_index < ゲーム内容.length-1 ) {
 						mode_index += 1;
-						$('#selector li').removeClass('selected');
-						$('#selector li:eq(' + mode_index +')').addClass('selected');
 					} else {
 						mode_index = ゲーム内容.length-1;
 					}
+					modeSelector.select(mode_index);
 					console.log('mode_index:', mode_index);
 				// Spaceキー 32
 				} else if ( e.keyCode == 32 ) {
 					isPlaying = true;
-					selector.hide();
+					modeSelector.hide();
 					game.start(mode_index);
 				} else {
 					console.log(e.keyCode);

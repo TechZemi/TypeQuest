@@ -184,6 +184,57 @@ TYPEQUEST.StopWatch = (function(window, documemt, $) {
 
 }(window, document, jQuery));
 
+TYPEQUEST.ModeSelector = (function(window, documemt, $) {
+	
+	/* イニシャライザ */
+	function ModeSelector(id, contents) {
+		this.elem = $('#' + id);
+		this.init(contents);
+	};
+
+	var p = ModeSelector.prototype = {
+		"elem" : null
+		, "selector" : null
+	};
+
+	p.init = function(contents) {
+		this.selector = $('<div id="selector">上下キーでモードを選択</div>');
+		var ul = $('<ul>');
+		for ( var i in contents ) {
+			var mode = contents[i];
+			if ( i == 0 ) {
+				$('<li class="selected">' + mode.モード + '</li>').appendTo(ul);
+			} else {
+				$('<li>' + mode.モード + '</li>').appendTo(ul);
+			}
+		}
+		this.selector.append(ul).appendTo(this.elem);
+
+		var centerX = this.elem.height() / 2;
+		var centerY = this.elem.width() / 2;
+		var adjustmentY = this.selector.width() / 2;
+		this.selector.css('top', centerX + 100);
+		this.selector.css('left', centerY - adjustmentY);
+	};
+
+	p.select = function(mode_index) {
+		$('#selector li').removeClass('selected');
+		$('#selector li:eq(' + mode_index +')').addClass('selected');
+	};
+
+	p.show = function() {
+		this.selector.show();
+	};
+
+	p.hide = function() {
+		this.selector.hide();
+	};
+
+	return ModeSelector;
+
+
+}(window, document, jQuery));
+
 /**
  *	タイピングゲームを提供します。
  */
