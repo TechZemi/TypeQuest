@@ -162,22 +162,28 @@ TYPEQUEST.StopWatch = (function(window, documemt, $) {
 		this.start_timestamp = new Date();
 
 		var previous_result = ( this.history.length > 0 ) ? '<br>前回: ' + this.history[this.history.length-1] + ' 秒' : '';
-		this.display = this.display.html('0 秒' + previous_result);
+		var best_result = ( this.history.length > 1 ) ? '<br>ベスト: ' + Math.min.apply(null, this.history) + ' 秒' : '';
+		this.display = this.display.html('0 秒' + previous_result + best_result);
 
 		this.timerId = setInterval(function(){
 			_self.count += 1; 
-			_self.display.html(_self.count + ' 秒' + previous_result);
+			_self.display.html(_self.count + ' 秒' + previous_result + best_result);
 		}, 1000);
-
 	};
 
 	p.stop = function() {
 		clearInterval(this.timerId);
 		var result = (((new Date()).getTime() - this.start_timestamp.getTime()) / 1000);
 		var previous_result = ( this.history.length > 0 ) ? '<br>前回: ' + this.history[this.history.length-1] + ' 秒' : '';
-
-		this.display.html(result + ' 秒' + previous_result);
 		this.history.push(result);
+
+		var best_result = ( this.history.length > 1 ) ? '<br>ベスト: ' + Math.min.apply(null, this.history) + ' 秒' : '';
+
+		this.display.html(result + ' 秒' + previous_result + best_result);
+	};
+
+	p.cleanup = function() {
+		this.history = [];
 	};
 
 	return StopWatch;

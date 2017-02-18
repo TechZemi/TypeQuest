@@ -348,7 +348,7 @@
 			}
 		};
 
-		var mode_index = 0;
+		var mode_index = previous_mode_index = 0;
 
 		// キーの受付を開始
 		$(document).on('keydown', function(e){
@@ -376,6 +376,10 @@
 				} else if ( e.keyCode == 32 ) {
 					isPlaying = true;
 					modeSelector.hide();
+					if ( previous_mode_index != mode_index) {
+						stopwatch.cleanup();
+					}
+					previous_mode_index = mode_index;
 					game.start(mode_index);
 				} else {
 					console.log(e.keyCode);
