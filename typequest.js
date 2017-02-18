@@ -190,15 +190,15 @@ TYPEQUEST.StopWatch = (function(window, documemt, $) {
 TYPEQUEST.Game = (function(window, documemt, $){
 	
 	/* イニシャライザ */
-	function Game(id, challenges) {
+	function Game(id, contents) {
 		this.elem = $('#' + id);
-		this.all_challenges = this.challenges = challenges;
+		this.contents = contents;
 		this.init();
 	};
 
 	var p = Game.prototype = {
 		"elem" : null
-		, "all_challenges" : null
+		, "contents" : null
 		, "challenges" : null
 		, "centerX" : null
 		, "centerY" : null
@@ -441,6 +441,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 				, { "moji" : "どぅ", "roman": ["dwu"] }
 			]
 		]
+		, "mode_index" : 0
 		, "challenge_index" : 0
 		, "current_challenge" : null
 		, "label_index" : 0
@@ -461,6 +462,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 		this.centerY = this.elem.width() / 2;
 
 		this.display = $('<div id="challenge">Spaceキーを押してスタート！</div>');
+
 		this.elem.append(this.display);
 		this.center();
 	};
@@ -504,6 +506,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 	 */
 	p.show = function() {
 		this.display.empty();
+		var mode = this.contents[this.mode_index];
 		var label = $('<ul id="label">')
 			, value = $('<ul id="value">');
 
@@ -530,21 +533,27 @@ TYPEQUEST.Game = (function(window, documemt, $){
 			li.appendTo(value);
 		}
 
-		this.display.append(label).append(value);
+		if ( mode.ローマ字を表示する ) {
+			this.display.append(label).append(value);
+		} else {
+			this.display.append(label);
+		}
+		
 
 		if ( this.delegate && this.delegate.next_letter ) {
-			this.delegate.next_letter(this.next_letter());
+			this.delegate.next_letter(mode, this.next_letter());
 		}
 	};
 
-	p.start = function() {
-		this.challenges = this.shuffle([].concat(this.all_challenges));
+	p.start = function(mode_index) {
+		this.mode_index = mode_index;
+		this.challenges = this.shuffle([].concat(this.contents[mode_index].課題));
 		this.challenge_index = 0;
 
 		if ( this.challenges.length > 10 ) this.challenges.length = 10;
 
 		if ( this.delegate && this.delegate.start ) {
-			this.delegate.start();
+			this.delegate.start(this.contents[this.mode_index]);
 		}
 
 		this.next(true);
@@ -597,7 +606,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 		this.current_challenge = challenge;
 		
 		if ( !nosignal && this.delegate && this.delegate.next_challenge ) {
-			this.delegate.next_challenge(challenge);
+			this.delegate.next_challenge(this.contents[this.mode_index], challenge);
 		}
 
 		this.show();
@@ -614,7 +623,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 		this.center();
 
 		if ( this.delegate && this.delegate.end ) {
-			this.delegate.end(isCancel);
+			this.delegate.end(this.contents[this.mode_index], isCancel);
 		}
 	};
 
@@ -736,7 +745,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 		}
 
 		if ( this.delegate && this.delegate.mistake ) {
-			this.delegate.mistake();
+			this.delegate.mistake(this.contents[this.mode_index]);
 		}
 
 		// 間違えたら音で知らせる

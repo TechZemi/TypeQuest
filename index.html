@@ -10,10 +10,12 @@
             #main { position: relative; height:420px; background-image: url('./image/bg_natural_umi.jpg');background-size:cover; }
             #sub { padding-top:10px; height:250px; background: #f0f0f0; }
 
-            #challenge, #stopwatch { position: absolute; display: inline-block; padding: 20px; background-color: rgba(0, 0, 0, 0.5); color:#fff; text-align: center; border-radius: 10px; z-index: 100;}
-            #challenge { font-size: 2rem; }
+            #challenge, #stopwatch, #selector { position: absolute; display: inline-block; padding: 20px; background-color: rgba(0, 0, 0, 0.5); color:#fff; text-align: center; border-radius: 10px; z-index: 100;}
+            #challenge, #selector { font-size: 2rem; }
             #challenge ul { margin: 0px; }
             #stopwatch { top: 20px; right: 20px; }
+            #selector li { list-style-type: none; border: 2px solid transparent; border-radius: 5px; }
+            #selector li.selected { border: 2px solid #ff0; }
             #sub ul { margin: 5px 0; }
             #sub li { display: inline-block; margin: 0 2px; padding-top:20px;width: 50px; height: 30px; border: 1px solid #888; border-radius: 4px; text-align:center; }
 
