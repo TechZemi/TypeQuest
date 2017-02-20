@@ -190,6 +190,9 @@ TYPEQUEST.StopWatch = (function(window, documemt, $) {
 
 }(window, document, jQuery));
 
+/**
+ *	モードを選択するダイアログを表示します。
+ */
 TYPEQUEST.ModeSelector = (function(window, documemt, $) {
 	
 	/* イニシャライザ */
@@ -237,7 +240,6 @@ TYPEQUEST.ModeSelector = (function(window, documemt, $) {
 	};
 
 	return ModeSelector;
-
 
 }(window, document, jQuery));
 
@@ -561,16 +563,23 @@ TYPEQUEST.Game = (function(window, documemt, $){
 	/**
 	 *	現在の状態で問題を表示
 	 */
-	p.show = function() {
-		this.display.empty();
+	p.show = function(isShowForMistake) {
+		// 間違えた時、次の文字から表示するためのフラグ
+		if ( isShowForMistake === undefined ) isShowForMistake = false;
+
+		// ローマ字を表示するしないの条件を整理
 		var mode = this.contents[this.mode_index];
+		var isShowRoman = isShowForMistake || mode.ローマ字を表示する;
+
+		this.display.empty();
+		
 		var label = $('<ul id="label">')
 			, value = $('<ul id="value">');
 
 		for ( var i in this.current_challenge ) {
 			var term = this.current_challenge[i];
 			$('<li>' + term.label + '</li>')
-				.css('color', ((this.label_index == i) ? '#dda0dd' : 'fff'))
+				.css('color', ((this.label_index == i) ? '#dda0dd' : null))
 				.appendTo(label);
 			
 			var li = $('<li>');
@@ -581,7 +590,7 @@ TYPEQUEST.Game = (function(window, documemt, $){
 
 				for ( var k in roman[0] ) {
 					$('<li>' + roman[0][k] + '</li>')
-						.css('color', ((this.label_index == i && this.moji_index == j && this.letter_index == k) ? '#dda0dd' : 'fff'))
+						.css('color', ((isShowRoman && this.label_index == i && this.moji_index == j && this.letter_index == k) ? '#dda0dd' : null))
 						.appendTo(letters);
 				}
 
@@ -590,15 +599,15 @@ TYPEQUEST.Game = (function(window, documemt, $){
 			li.appendTo(value);
 		}
 
-		if ( mode.ローマ字を表示する ) {
-			this.display.append(label).append(value);
-		} else {
-			this.display.append(label);
+		this.display.append(label).append(value);
+
+		if ( !isShowRoman ) {
+			// ミステイク時にはローマ字を表示させるので、その際に表示ダイアログの大きさが変わらないように非表示時も透明で置いている
+			value.css('color', 'transparent');
 		}
 		
-
 		if ( this.delegate && this.delegate.next_letter ) {
-			this.delegate.next_letter(mode, this.next_letter());
+			this.delegate.next_letter(mode, this.next_letter(), isShowForMistake);
 		}
 	};
 
@@ -801,12 +810,21 @@ TYPEQUEST.Game = (function(window, documemt, $){
 			}
 		}
 
+		var mode = this.contents[this.mode_index];
+
 		if ( this.delegate && this.delegate.mistake ) {
-			this.delegate.mistake(this.contents[this.mode_index]);
+			this.delegate.mistake(mode);
 		}
 
 		// 間違えたら音で知らせる
 		this.mistake_beep.play();
+		if ( !mode.ローマ字を表示する ) {
+			this.show(true);	
+		} else {
+			if ( this.delegate && this.delegate.next_letter ) {
+				this.delegate.next_letter(mode, this.next_letter(), true);
+			}
+		}
 	};
 
 	return Game;

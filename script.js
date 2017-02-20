@@ -313,9 +313,11 @@
 
 				stopwatch.start();
 			}
-			, next_letter : function(mode, arr) {
-				if ( mode.キー位置を表示する ) {
-					keyboard.markup(arr[0]);	
+			, next_letter : function(mode, arr, isMistake) {
+				if ( isMistake || mode.キー位置を表示する ) {
+					keyboard.markup(arr[0]);
+				} else {
+					keyboard.cleanup();
 				}
 			}
 			, next_challenge : function(mode, challenge) {
