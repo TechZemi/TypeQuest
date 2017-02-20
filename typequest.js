@@ -198,23 +198,30 @@ TYPEQUEST.ModeSelector = (function(window, documemt, $) {
 	/* イニシャライザ */
 	function ModeSelector(id, contents) {
 		this.elem = $('#' + id);
-		this.init(contents);
+		this.contents = contents;
+		this.init();
 	};
 
 	var p = ModeSelector.prototype = {
 		"elem" : null
+		, "contents" : null
 		, "selector" : null
 	};
 
-	p.init = function(contents) {
+	p.init = function() {
 		this.selector = $('<div id="selector">上下キーでモードを選択</div>');
 		var ul = $('<ul>');
-		for ( var i in contents ) {
-			var mode = contents[i];
+		for ( var i in this.contents ) {
+			var mode = this.contents[i];
 			if ( i == 0 ) {
+				mode.isSelectable = true;
 				$('<li class="selected">' + mode.モード + '</li>').appendTo(ul);
-			} else {
+			} else if ( mode.初期選択できる ) {
+				mode.isSelectable = true;
 				$('<li>' + mode.モード + '</li>').appendTo(ul);
+			} else {
+				mode.isSelectable = false;
+				$('<li class="unselectable">' + mode.モード + '</li>').appendTo(ul);
 			}
 		}
 		this.selector.append(ul).appendTo(this.elem);
@@ -227,8 +234,20 @@ TYPEQUEST.ModeSelector = (function(window, documemt, $) {
 	};
 
 	p.select = function(mode_index) {
-		$('#selector li').removeClass('selected');
-		$('#selector li:eq(' + mode_index +')').addClass('selected');
+		var mode = this.contents[mode_index];
+		if ( mode.isSelectable ) {
+			$('#selector li').removeClass('selected');
+			$('#selector li:eq(' + mode_index +')').addClass('selected');	
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	p.enable = function(mode_index) {
+		var mode = this.contents[mode_index];
+		mode.isSelectable = true;
+		$('#selector li:eq(' + mode_index +')').removeClass('unselectable');	
 	};
 
 	p.show = function() {

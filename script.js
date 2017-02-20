@@ -14,6 +14,7 @@
 			, "ゲームオーバー時の画像" : "tobikomi.png"
 			, "ローマ字を表示する" : true
 			, "キー位置を表示する" : true
+			, "初期選択できる" : true 
 			, "課題" : [
 				[
 					{ "label" : "く" }
@@ -86,6 +87,7 @@
 			, "ゲームオーバー時の画像" : "tobikomi.png"
 			, "ローマ字を表示する" : true
 			, "キー位置を表示する" : false
+			, "初期選択できる" : true
 			, "課題" : [
 				[
 					{ "label" : "秋刀魚", "value" : [ "さ", "ん", "ま"] }
@@ -164,6 +166,7 @@
 			, "ゲームオーバー時の画像" : "tobikomi.png"
 			, "ローマ字を表示する" : false
 			, "キー位置を表示する" : false
+			, "初期選択できる" : false
 			, "課題" : [
 				[
 					{ "label" : "ちゅ" }
@@ -278,7 +281,7 @@
 	$(function(){
 
 		var witch = $('<img id="flying_witch">');
-		var top = 0, left = 0, timerId = null, isPlaying = false, mode = null;
+		var top = 0, left = 0, timerId = null, isPlaying = false, mode_index = previous_mode_index = 0;
 
 		// キーボード
 		var keyboard = new TYPEQUEST.Keyboard('sub');
@@ -339,7 +342,10 @@
 				} else {
 					witch.attr('src', './image/' + mode.クリア時の画像);
 					witch.css('top', 110);
-					witch.css('left', 840);	
+					witch.css('left', 840);
+					if ( previous_mode_index+1 < ゲーム内容.length ) {
+						modeSelector.enable(previous_mode_index+1);	
+					}
 				}
 				
 				clearInterval(timerId);
@@ -350,29 +356,37 @@
 			}
 		};
 
-		var mode_index = previous_mode_index = 0;
-
 		// キーの受付を開始
 		$(document).on('keydown', function(e){
 
 			if ( !isPlaying ) {
 				// ↑キー 38
 				if ( e.keyCode == 38 ) {
+					var tmp = mode_index;
+
 					if ( 0 < mode_index ) {
 						mode_index -= 1;
 					} else {
 						mode_index = 0;
 					}
+
+					if ( !modeSelector.select(mode_index) ) {
+						mode_index = tmp;
+					}
 					modeSelector.select(mode_index);
 					console.log('mode_index:', mode_index);
 				// ↓キー 40
 				} else if ( e.keyCode == 40 ) {
+					var tmp = mode_index;
+
 					if ( mode_index < ゲーム内容.length-1 ) {
 						mode_index += 1;
 					} else {
 						mode_index = ゲーム内容.length-1;
 					}
-					modeSelector.select(mode_index);
+					if ( !modeSelector.select(mode_index) ) {
+						mode_index = tmp;
+					}
 					console.log('mode_index:', mode_index);
 				// Spaceキー 32
 				} else if ( e.keyCode == 32 ) {
